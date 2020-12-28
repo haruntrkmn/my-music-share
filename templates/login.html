@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+          <h1>You are already logged in</h1>
+    {% else %}
+    <div class="entrance">
+        <h1 class="center">Log in</h1>
+        <form action="" method="post" name="login" class="center">
+            {{  form.csrf_token  }}
+            <div>
+              <div>
+                {{ form.username(required=True, autofocus=True,
+                                 class='form',
+                                 placeholder='username') }}
+              </div>
+              {% for error in form.username.errors %}
+                <p>
+                    {{ error }}
+                </p>
+              {% endfor %}
+            </div>
+
+            <div>
+              <div>
+                {{ form.password(required=True, class='form',
+                                 placeholder='password') }}
+              </div>
+              {% for error in form.password.errors %}
+                <p>
+                    {{ error }}
+                </p>
+              {% endfor %}
+            </div>
+            <button class="form_button">
+              Login
+            </button>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}

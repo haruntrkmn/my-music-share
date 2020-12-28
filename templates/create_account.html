@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+          <h1>You already have an account</h1>
+    {% else %}
+    <div class="entrance">
+    <h1 class="center">Sign up</h1>
+
+    <form action="" method="post" name="create_account" class="center">
+        {{  form.csrf_token  }}
+        <div>
+          <div>
+            {{ form.username(required=True, autofocus=True,
+                             class='form',
+                             placeholder='username') }}
+          </div>
+          {% for error in form.username.errors %}
+            <p>
+                {{ error }}
+            </p>
+          {% endfor %}
+        </div>
+
+        <div>
+          <div>
+            {{ form.password(required=True, class='form',
+                             placeholder='password') }}
+          </div>
+          {% for error in form.password.errors %}
+            <p>
+                {{ error }}
+            </p>
+          {% endfor %}
+        </div>
+        <button class="form_button">
+          Create
+        </button>
+    </form>
+    </div>
+    {% endif %}
+{% endblock %}
+

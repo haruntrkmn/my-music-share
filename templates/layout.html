@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+      <meta charset="utf-8"/>
+      <title>{% block title %}{% endblock %}</title>
+      <link rel="stylesheet"
+          href="{{ url_for('static', filename='visuals2.css') }}"/>
+
+  </head>
+  <body>
+      <ul class="navbar_left">
+          <div class="navbar_left">
+          {% if current_user.is_authenticated %}
+          <li class="navbar">
+            <a class="navbar_f" href="{{ url_for('feed_page') }}">Feed</a>
+          </li>
+
+          {% endif %}
+
+
+          <li class="navbar">
+          {% if not current_user.is_authenticated %}
+            <a  class="navbar_l" href="{{ url_for('login_page') }}">Log in</a>
+              <a  class="navbar_s" href="{{ url_for('create_account_page') }}">Sign Up</a>
+
+          {% else %}
+
+            <a  class="navbar_d" href="{{ url_for('discover_select_page') }}">Discover</a>
+          {% endif %}
+          </li>
+
+           {% if current_user.is_authenticated %}
+          <li class="navbar">
+            <a class="navbar_shr" href="{{ url_for('create_post_page') }}">Share</a>
+          </li>
+
+          <li class="navbar">
+            <a class="navbar_p" href="{{ url_for('profile_page') }}">Profile</a>
+          </li>
+
+          <li class="navbar">
+            <a class="navbar_lo" href="{{ url_for('logout_page') }}">Log out</a>
+          </li>
+
+          {% endif %}
+
+
+          </div>
+      </ul>
+
+      <ul class="navbar_right">
+          {% if current_user.is_authenticated %}
+          <div class="navbar_right">
+          <div class="profile_on_navbar">
+<!--              <div class="username">-->
+<!--                <p class="username">{{current_user.username}}</p>-->
+<!--              </div>-->
+              {% set fav_genres = current_user.get_fav_genres()[0] %}
+              {% set scores = current_user.get_fav_genres()[1] %}
+              <div class="username">
+                <p class="username">Top genres of you</p>
+              </div>
+              {% for i in range(scores|length) %}
+              {% if scores[i] != 0 %}
+<!--              <p>{{fav_genres[i]}} score: {{scores[i]}}</p>-->
+              <p style="display: inline">{{i + 1}}: </p>
+              <a class="top_genres_of_you" href="{{ url_for('discover_show_page', genre=fav_genres[i]) }}"> {{fav_genres[i]}}</a>
+              <p></p>
+              {% endif %}
+              {% endfor %}
+
+          </div>
+
+          </div>
+          {% endif %}
+      </ul>
+
+
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% block content %}{% endblock %}
+
+<!--    <footer>-->
+<!--      <small>&copy; 2020, Harun Türkmen</small>-->
+<!--    </footer>-->
+  <script type=text/javascript src="{{
+  url_for('static', filename='jquery.js') }}">
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Post{% endblock %}
+{% block content %}
+    <div class="entrance" style="width: 57%; height: 100%; padding-top: 80px">
+        <div class="post_main">
+         <p style="display: inline; text-align: center; margin: auto; color: #ad4b4b">{{post.song.genre}}</p>
+            <p></p>
+            <p  style="display: inline" class="username">{{post.song.song_name}} </p>
+            <p style="display: inline"> by </p>
+            <p style="display: inline" class="username">{{post.song.artist}} </p>
+            <p></p>
+            {% if is_spotify %}
+            <iframe src={{embedded_link}} width="300" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            {% else %}
+            <iframe  width="300" height="300" src={{embedded_link}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+            {% endif %}
+
+            <p></p>
+            <p style="display: inline">Posted by </p>
+            {% if current_user.user_id != post.user_id %}
+            <a href="{{url_for("profile_page", username=username)}}" style="text-decoration: none; color: rgb(63, 52, 84); display: inline; text-align: left" class="username">{{username}}</a>
+            {% else %}
+            <a style="text-decoration: none; color: rgb(63, 52, 84); display: inline; text-align: left" class="username">you</a>
+            {% endif %}
+            <p style="display: inline">on</p>
+            <p style="display: inline" class="username"> {{post.date}} </p>
+            <p></p>
+            <a href="{{post.song.link}}">Song link</a>
+        </div>
+        <p></p>
+        <div style="margin: auto; width: 60%">
+            <a href="javascript: show_likes()" class="likes_">
+                likes: {{likers | length}}
+            </a>
+            <a href="javascript: show_comments()" class="comments_">
+                comments: {{comments | length}}
+            </a>
+        </div>
+        <br><br>
+        <div style="margin: auto; width: 60%">
+            <div id="likers" class="likers_of_post" style="display: none;">
+                {% for liker in likers %}
+                {% if liker == current_user.username %}
+                <a href="{{url_for("profile_page")}}" class="top_genres_of_you">you<br>
+                {% else %}
+                <a href="{{url_for("profile_page", username=liker)}}" class="top_genres_of_you">{{liker}}<br>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div id="comments" class="comments_of_post" style="display: none; font-weight: bold">
+                {% for comment in comments %}
+                {% if comment["username"] == current_user.username %}
+                <a href="{{url_for("profile_page")}}" class="top_genres_of_you">you: </a>
+                {% else %}
+                <a href="{{url_for("profile_page", username=comment["username"])}}" class="top_genres_of_you">{{comment["username"]}}: </a>
+                {% endif %}
+                <div class="single_comment">
+                    <p style="display: inline; font-weight: 200">{{comment["comment_text"]}}</p><br>
+                </div>
+                <br>
+                {% endfor %}
+            </div>
+        </div>
+        <br><br>
+        <div>
+            <form action="" method="post" name="delete_post" style="text-align: center">
+                {% if can_delete %}
+                    <button class="delete_button" style="margin: auto">
+                      Delete
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+<script>
+    function show_likes(){
+        var a = document.getElementById("likers")
+        if (a.style.display === "none"){
+            var b = document.getElementById("comments")
+            b.style.display = "none"
+            a.style.display = "block"
+        }
+        else{
+            a.style.display = "none"
+        }
+        window.scrollTo(0,document.body.scrollHeight);
+    }
+
+    function show_comments(){
+        var a = document.getElementById("comments")
+        if (a.style.display === "none"){
+            var b = document.getElementById("likers")
+            b.style.display = "none"
+            a.style.display = "block"
+        }
+        else{
+            a.style.display = "none"
+        }
+        window.scrollTo(0,document.body.scrollHeight);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+
+
+    <h1 class="center">{{username}}</h1>
+
+    <div class="profile">
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <p class="username" style="display: inline-block;; text-align: center; color: #86a5b0">join date:&nbsp; </p>
+            <p style="display: inline"> {{join_date}}</p><br>
+        </div>
+
+        <div>
+            <div style="width: 31.5%; float: left">
+                <div class="genre_scores_list">
+                    <p class="username" style="color: #86a5b0">
+                        {% if visitor %}
+                        genre scores of {{username}}
+                        {% else %}
+                        your genre scores
+                        {% endif %}</p>
+                    <br style="line-height: 42px;">
+                    {% for i in range(genres|length) %}
+                    {% if genre_scores[i] > 0 %}
+                    <a class="genre_link"  href="{{ url_for('discover_show_page', genre=genres[i]) }}">{{ genres[i] }}</a> : {{ genre_scores[i] }}
+                    <p></p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="posts_list">
+                <p class="username" style="color: #86a5b0">
+                    {% if visitor %}
+                        posts of {{username}}
+                        {% else %}
+                        your posts
+                        {% endif %}</p>
+                {% for i in range(((posts | length) / 2) | int) %}
+
+                <div class="entrance" style="float: left; margin-left: 15%; width: 30%">
+                    <a style="text-decoration: none; color: rgb(63, 52, 84)" href="{{ url_for('post_page', post_id=posts[2 * i].post_id) }}">
+                    <div class="post">
+                        {% set genre_name = posts[2 * i].song.genre %}
+                        {% if genre_name|length > 16 %}
+                        {% set genre_name = "..." + genre_name[0: 13]%}
+                        {% endif %}
+                        <p style="text-align: center; margin: auto; color: #ad4b4b">{{genre_name}}</p>
+                        {% set song_name = posts[2 * i].song.song_name %}
+                        {% if song_name|length > 16 %}
+                        {% set song_name = "..." + song_name[0: 13]%}
+                        {% endif %}
+                        <p  class="username" style="display: inline">{{song_name}} </p>
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[2 * i].song.artist %}
+                        {% if artist_name|length > 16 %}
+                        {% set artist_name = "..." + artist_name[0: 13]%}
+                        {% endif %}
+                        <p class="username" style="display: inline">{{artist_name}} </p>
+                        <br>
+                            {% if is_spotifys[2 * i] %}
+                            <iframe src={{embedded_links[2 * i]}} width="90%" height="90%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="90%" height="90%" src={{embedded_links[2 * i]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="entrance" style="float: right; margin-right:15%; width: 30%">
+                    <a style="text-decoration: none; color: rgb(63, 52, 84)" href="{{ url_for('post_page', post_id=posts[2 * i + 1].post_id) }}">
+                    <div class="post">
+                        {% set genre_name = posts[2 * i + 1].song.genre %}
+                        {% if genre_name|length > 16 %}
+                        {% set genre_name = "..." + genre_name[0: 13]%}
+                        {% endif %}
+                        <p style="text-align: center; margin: auto; color: #ad4b4b">{{genre_name}}</p>
+                        {% set song_name = posts[2 * i + 1].song.song_name %}
+                        {% if song_name|length > 16 %}
+                        {% set song_name = "..." + song_name[0: 13]%}
+                        {% endif %}
+                        <p  class="username" style="display: inline">{{song_name}} </p>
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[2 * i + 1].song.artist %}
+                        {% if artist_name|length > 16 %}
+                        {% set artist_name = "..." + artist_name[0: 13]%}
+                        {% endif %}
+                        <p class="username" style="display: inline">{{artist_name}} </p>
+                        <br>
+                            {% if is_spotifys[2 * i + 1] %}
+                            <iframe src={{embedded_links[2 * i + 1]}} width="90%" height="90%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="90%" height="90%" src={{embedded_links[2 * i + 1]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                </div>
+                {% endfor %}
+                {% if (posts | length) % 2 == 1 %}
+                    <div class="entrance" style="float: left; margin-left: 15%; width: 30%">
+                    <a style="text-decoration: none; color: rgb(63, 52, 84)" href="{{ url_for('post_page', post_id=posts[-1].post_id) }}">
+                        <div class="post">
+                            {% set genre_name = posts[-1].song.genre %}
+                            {% if genre_name|length > 16 %}
+                            {% set genre_name = "..." + genre_name[0: 13]%}
+                            {% endif %}
+                            <p style="text-align: center; margin: auto; color: #ad4b4b">{{genre_name}}</p>
+                            {% set song_name = posts[-1].song.song_name %}
+                            {% if song_name|length > 16 %}
+                            {% set song_name = "..." + song_name[0: 13]%}
+                            {% endif %}
+                            <p  class="username" style="display: inline">{{song_name}} </p>
+                            <br>
+                            <p style="display: inline"> by </p>
+                            <br>
+                            {% set artist_name = posts[-1].song.artist %}
+                            {% if artist_name|length > 16 %}
+                            {% set artist_name = "..." + artist_name[0: 13]%}
+                            {% endif %}
+                            <p class="username" style="display: inline">{{artist_name}} </p>
+                            <br>
+                                {% if is_spotifys[-1] %}
+                                <iframe src={{embedded_links[-1]}} width="90%" height="90%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                {% else %}
+                                <iframe  width="90%" height="90%" src={{embedded_links[-1]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                {% endif %}
+
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

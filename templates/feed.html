@@ -1,0 +1,384 @@
+{% extends "layout.html" %}
+{% block title %}Feed{% endblock %}
+{% block content %}
+<div class="center" style="width: 55%">
+    <h1 class="center">Your feed</h1>
+            {% for i in range(((posts | length) / 3) | int) %}
+                <div class="entrance" style="float: left; width: 25%; margin-left: 5%">
+                    <a class="post" href="{{url_for("post_page", post_id=posts[3 * i].post_id)}}">
+                        <div class="post">
+                         <p style="text-align: center; margin: auto; color: #ad4b4b">{{posts[3 * i].song.genre}}</p>
+                            {% set song_name = posts[3 * i].song.song_name  %}
+                            {% if song_name | length > 21 %}
+                            {% set song_name = song_name[:18] %}
+                            <p  class="username" style="display: inline">{{song_name}}...</p>
+                            {% else %}
+                            <p  class="username" style="display: inline">{{posts[3 * i].song.song_name}} </p>
+                            {% endif %}
+                            <br>
+                            <p style="display: inline"> by </p>
+                            <br>
+                            {% set artist_name = posts[3 * i].song.artist  %}
+                            {% if artist_name | length > 21 %}
+                            {% set artist_name = artist_name[:18] %}
+                            <p  class="username" style="display: inline">{{artist_name}}...</p>
+                            {% else %}
+                            <p class="username" style="display: inline">{{posts[3 * i].song.artist}} </p>
+                            {% endif %}
+                            <br>
+                                {% if is_spotifys[3 * i] %}
+                                <iframe src={{embedded_links[3 * i]}} width="60%" height="10%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                {% else %}
+                                <iframe  width="60%" height="10%" src={{embedded_links[3 * i]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                {% endif %}
+
+                        </div>
+                    </a>
+                            {% if is_likeds[3 * i] %}
+                            <a href="javascript:update_like('#post{{posts[3 * i].post_id}}',
+                                '{{ posts[3 * i].post_id }}',
+                                '{{ current_user.user_id }}');" class="liked" id="post{{posts[3 * i].post_id}}" style="float: left; margin-left: 22%">
+                            &hearts;
+                            </a>
+                            {% else %}
+                            <a href="javascript:update_like('#post{{posts[3 * i].post_id}}',
+                                '{{ posts[3 * i].post_id }}',
+                                '{{ current_user.user_id }}');" class="not_liked" id="post{{posts[3 * i].post_id}}" style="float: left; margin-left: 22%">
+                            &hearts;
+                            </a>
+                            {% endif %}
+
+                        <a id="btn{{3 * i}}" href="javascript:show_comment_section({{posts|length}}, '{{3 * i}}')" class="comment" style="float: right; margin-right: 22%">
+                        </a>
+
+
+                </div>
+
+                <div class="entrance" style="width: 25%; float: left; margin-left: 7.5%">
+                    <a class="post" href="{{url_for("post_page", post_id=posts[3 * i + 1].post_id)}}">
+                    <div class="post">
+                     <p style="text-align: center; margin: auto; color: #ad4b4b">{{posts[3 * i + 1].song.genre}}</p>
+                        {% set song_name = posts[3 * i + 1].song.song_name  %}
+                        {% if song_name | length > 21 %}
+                        {% set song_name = song_name[:18] %}
+                        <p  class="username" style="display: inline">{{song_name}}...</p>
+                        {% else %}
+                        <p  class="username" style="display: inline">{{posts[3 * i + 1].song.song_name}} </p>
+                        {% endif %}
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[3 * i + 1].song.artist  %}
+                        {% if artist_name | length > 21 %}
+                        {% set artist_name = artist_name[:18] %}
+                        <p  class="username" style="display: inline">{{artist_name}}...</p>
+                        {% else %}
+                        <p class="username" style="display: inline">{{posts[3 * i + 1].song.artist}} </p>
+                        {% endif %}
+                        <br>
+
+                            {% if is_spotifys[3 * i + 1] %}
+                            <iframe src={{embedded_links[3 * i + 1]}} width="60%" height="10%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="60%" height="10%" src={{embedded_links[3 * i + 1]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                    </a>
+                        {% if is_likeds[3 * i + 1] %}
+                        <a href="javascript:update_like('#post{{posts[3 * i + 1].post_id}}',
+                            '{{ posts[3 * i + 1].post_id }}',
+                            '{{ current_user.user_id }}');" class="liked" id="post{{posts[3 * i + 1].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% else %}
+                        <a href="javascript:update_like('#post{{posts[3 * i + 1].post_id}}',
+                            '{{ posts[3 * i + 1].post_id }}',
+                            '{{ current_user.user_id }}');" class="not_liked" id="post{{posts[3 * i + 1].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% endif %}
+                        <a id="btn{{3 * i + 1}}" href="javascript:show_comment_section({{posts|length}}, '{{3 * i + 1}}')" class="comment" style="float: right; margin-right: 22%">
+                        </a>
+
+
+                </div>
+
+                <div class="entrance" style="float: right; width: 25%; margin-right: 5%">
+                    <a class="post" href="{{url_for("post_page", post_id=posts[3 * i + 2].post_id)}}">
+                    <div class="post">
+                     <p style="text-align: center; margin: auto; color: #ad4b4b">{{posts[3 * i + 2].song.genre}}</p>
+                        {% set song_name = posts[3 * i + 2].song.song_name  %}
+                        {% if song_name | length > 21 %}
+                        {% set song_name = song_name[:18] %}
+                        <p  class="username" style="display: inline">{{song_name}}...</p>
+                        {% else %}
+                        <p  class="username" style="display: inline">{{posts[3 * i + 2].song.song_name}} </p>
+                        {% endif %}
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[3 * i + 2].song.artist  %}
+                        {% if artist_name | length > 21 %}
+                        {% set artist_name = artist_name[:18] %}
+                        <p  class="username" style="display: inline">{{artist_name}}...</p>
+                        {% else %}
+                        <p class="username" style="display: inline">{{posts[3 * i + 2].song.artist}} </p>
+                        {% endif %}
+                        <br>
+
+                            {% if is_spotifys[3 * i + 2] %}
+                            <iframe src={{embedded_links[3 * i + 2]}} width="60%" height="10%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="60%" height="10%" src={{embedded_links[3 * i + 2]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                    </a>
+                        {% if is_likeds[3 * i + 2] %}
+                        <a href="javascript:update_like('#post{{posts[3 * i + 2].post_id}}',
+                            '{{ posts[3 * i + 2].post_id }}',
+                            '{{ current_user.user_id }}');" class="liked" id="post{{posts[3 * i + 2].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% else %}
+                        <a href="javascript:update_like('#post{{posts[3 * i + 2].post_id}}',
+                            '{{ posts[3 * i + 2].post_id }}',
+                            '{{ current_user.user_id }}');" class="not_liked" id="post{{posts[3 * i + 2].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% endif %}
+                        <a id="btn{{3 * i + 2}}" href="javascript:show_comment_section({{posts|length}}, '{{3 * i + 2}}')" class="comment" style="float: right; margin-right: 22%">
+                        </a>
+                </div>
+
+                 <form style="display: none" id="form{{3 * i}}">
+                    <input id="tb{{3 * i}}" class="enter_comment" type="text">
+                     <a class="comment_button" href="javascript:add_comment('{{ posts[3 * i].post_id }}',
+                        '{{current_user.user_id}}',
+                        '{{3 * i}}');">send</a>
+                </form>
+
+                <form style="display: none" id="form{{3 * i + 1}}">
+                    <input id="tb{{3 * i + 1}}" class="enter_comment" type="text">
+                     <a class="comment_button" href="javascript:add_comment('{{ posts[3 * i + 1].post_id }}',
+                        '{{current_user.user_id}}',
+                        '{{3 * i + 1}}');">send</a>
+                </form>
+
+                <form style="display: none" id="form{{3 * i + 2}}">
+                    <input id="tb{{3 * i + 2}}" class="enter_comment" type="text">
+                     <a class="comment_button" href="javascript:add_comment('{{ posts[3 * i + 2].post_id }}',
+                        '{{current_user.user_id}}',
+                        '{{3 * i + 2}}');">send</a>
+                </form>
+
+            {% endfor %}
+                {% if (posts | length) % 3 != 0 %}
+                    <div class="entrance" style="float: left; width: 25%; margin-left: 5%">
+                    <a class="post" href="{{url_for("post_page", post_id=posts[-1].post_id)}}">
+                    <div class="post">
+                     <p style="text-align: center; margin: auto; color: #ad4b4b">{{posts[-1].song.genre}}</p>
+                        {% set song_name = posts[-1].song.song_name  %}
+                        {% if song_name | length > 21 %}
+                        {% set song_name = song_name[:18] %}
+                        <p  class="username" style="display: inline">{{song_name}}...</p>
+                        {% else %}
+                        <p  class="username" style="display: inline">{{posts[-1].song.song_name}} </p>
+                        {% endif %}
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[-1].song.artist  %}
+                        {% if artist_name | length > 21 %}
+                        {% set artist_name = artist_name[:18] %}
+                        <p  class="username" style="display: inline">{{artist_name}}...</p>
+                        {% else %}
+                        <p class="username" style="display: inline">{{posts[-1].song.artist}} </p>
+                        {% endif %}
+                        <br>
+
+                            {% if is_spotifys[-1] %}
+                            <iframe src={{embedded_links[-1]}} width="60%" height="10%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="60%" height="10%" src={{embedded_links[-1]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                    </a>
+                        {% if is_likeds[-1] %}
+                        <a href="javascript:update_like('#post{{posts[-1].post_id}}',
+                            '{{ posts[-1].post_id }}',
+                            '{{ current_user.user_id }}');" class="liked" id="post{{posts[-1].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% else %}
+                        <a href="javascript:update_like('#post{{posts[-1].post_id}}',
+                            '{{ posts[-1].post_id }}',
+                            '{{ current_user.user_id }}');" class="not_liked" id="post{{posts[-1].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% endif %}
+                        <a id="btn-1" href="javascript:show_comment_section({{posts|length}}, '-1')" class="comment" style="float: right; margin-right: 22%">
+                        </a>
+
+                        {% if (posts | length) % 3 != 2 %}
+
+                        <form style="display: none" id="form-1">
+                            <input id="tb-1" class="enter_comment" type="text" style="width: 100%"><p></p>
+                             <a style="margin: auto"class="comment_button" href="javascript:add_comment('{{ posts[-1].post_id }}',
+                                '{{current_user.user_id}}',
+                                '-1');">send</a>
+                        </form>
+                        <br><br><br>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                {% if (posts | length) % 3 == 2 %}
+                    <div class="entrance" style="float: left; width: 25%; margin-left: 7.5%">
+                    <a class="post" href="{{url_for("post_page", post_id=posts[-2].post_id)}}">
+                    <div class="post">
+                     <p style="text-align: center; margin: auto; color: #ad4b4b">{{posts[-2].song.genre}}</p>
+                        {% set song_name = posts[-2].song.song_name  %}
+                        {% if song_name | length > 21 %}
+                        {% set song_name = song_name[:18] %}
+                        <p  class="username" style="display: inline">{{song_name}}...</p>
+                        {% else %}
+                        <p  class="username" style="display: inline">{{posts[-2].song.song_name}} </p>
+                        {% endif %}
+                        <br>
+                        <p style="display: inline"> by </p>
+                        <br>
+                        {% set artist_name = posts[-2].song.artist  %}
+                        {% if artist_name | length > 21 %}
+                        {% set artist_name = artist_name[:18] %}
+                        <p  class="username" style="display: inline">{{artist_name}}...</p>
+                        {% else %}
+                        <p class="username" style="display: inline">{{posts[-2].song.artist}} </p>
+                        {% endif %}
+                        <br>
+
+                            {% if is_spotifys[-2] %}
+                            <iframe src={{embedded_links[-2]}} width="60%" height="10%" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            {% else %}
+                            <iframe  width="60%" height="10%" src={{embedded_links[-2]}} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            {% endif %}
+
+                    </div>
+                        </a>
+                        {% if is_likeds[-2] %}
+                        <a href="javascript:update_like('#post{{posts[-2].post_id}}',
+                            '{{ posts[-2].post_id }}',
+                            '{{ current_user.user_id }}');" class="liked" id="post{{posts[-2].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% else %}
+                        <a href="javascript:update_like('#post{{posts[-2].post_id}}',
+                            '{{ posts[-2].post_id }}',
+                            '{{ current_user.user_id }}');" class="not_liked" id="post{{posts[-2].post_id}}" style="float: left; margin-left: 22%">
+                        &hearts;
+                        </a>
+                        {% endif %}
+                        <a id="btn-2" href="javascript:show_comment_section({{posts|length}}, '-2')" class="comment" style="float: right; margin-right: 22%">
+                        </a>
+
+                        <form style="display: none" id="form-2">
+                            <input id="tb-2" class="enter_comment" type="text" style="width: 100%"><p></p>
+                             <a style="margin: auto"class="comment_button" href="javascript:add_comment('{{ posts[-2].post_id }}',
+                                '{{current_user.user_id}}',
+                                '-2');">send</a>
+                        </form>
+
+                        <form style="display: none" id="form-1">
+                            <input id="tb-1" class="enter_comment" type="text" style="width: 100%"><p></p>
+                             <a style="margin: auto" class="comment_button" href="javascript:add_comment('{{ posts[-1].post_id }}',
+                                '{{current_user.user_id}}',
+                                '-1');">send</a>
+                        </form>
+
+                        <br><br><br>
+                </div>
+                {% endif %}
+</div>
+
+
+<script>
+    function update_like(sourceElem, post_id, user_id) {
+        $.post('/_update_like', {
+            post_id: post_id,
+            user_id: user_id
+        }).done(function() {
+            if ($(sourceElem).hasClass("liked")){
+                $(sourceElem).attr("class", "not_liked");
+            }
+            else if ($(sourceElem).hasClass("not_liked")){
+                $(sourceElem).attr("class", "liked");
+            }
+            // is_likeds[0] = true
+        }).fail(function() {
+            alert("could not like");
+        });
+    }
+
+    function show_comment_section(posts_length, ID){
+        var len = parseInt(posts_length);
+        var i;
+        var id = "form" + ID.toString()
+        var btn = "btn" + ID.toString()
+        if (document.getElementById(id).style.display === "none"){
+            for (i = 0; i < len; i++){
+                var id_ = "form" + i.toString()
+                var btn_ = "btn" + i.toString()
+                try {
+                    document.getElementById(btn_).className = "comment";
+                    document.getElementById(id_).style.display = "none";
+                }
+                catch(err){
+
+                }
+
+            }
+            try{
+                document.getElementById("btn-1").className = "comment";
+                document.getElementById("btn-2").className = "comment";
+                document.getElementById("form-1").style.display = "none";
+                document.getElementById("form-2").style.display = "none";
+            }
+            catch(err){
+
+            }
+            document.getElementById(btn).className = "comment_p"
+            document.getElementById(id).style.display = "block";
+        }
+        else{
+            document.getElementById(btn).className = "comment"
+            document.getElementById(id).style.display = "none";
+        }
+        if ((len % 3 === 0 && parseInt(ID) >= len - 3) || ID === '-1' || ID === '-2') {
+            window.scrollTo(0,document.body.scrollHeight);
+        }
+    }
+
+    function add_comment(post_id, user_id, textbox_id) {
+        var tb_id = "tb" + textbox_id.toString()
+        var id = "form" + textbox_id.toString()
+        var btn = "btn" + textbox_id.toString()
+        var cmt = document.getElementById(tb_id).value
+        if (cmt.length > 0) {
+            $.post('/_add_comment', {
+                post_id: post_id,
+                user_id: user_id,
+                comment: document.getElementById(tb_id).value
+            }).done(function () {
+                document.getElementById(btn).className = "comment";
+                document.getElementById(id).style.display = "none";
+                document.getElementById(tb_id).value = ""
+            }).fail(function () {
+                alert("could not comment");
+            });
+        }
+    }
+</script>
+
+{% endblock %}

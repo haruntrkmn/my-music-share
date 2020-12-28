@@ -1,0 +1,156 @@
+body{
+    font-size: 20px;
+    color: rgb(63, 52, 84);
+    font-family: 'Mukta', sans-serif;
+    font-weight: 200;
+    background-color: #fbfafc;
+}
+
+button{
+    font-family: 'Mukta', sans-serif;
+}
+
+h1{
+    font-size: 80px;
+}
+
+input.form{
+    width: 230px;
+    height: 50px;
+      box-sizing: border-box;
+      /*border: 1px solid rgb(63, 52, 84);*/
+    border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      text-align: center;
+      background-color: white;
+      /*background-position: 10px 10px;*/
+      /*background-repeat: no-repeat;*/
+      /*padding: 12px 20px 12px 40px;*/
+      margin-bottom: 5px;
+}
+
+button.delete_button{
+    text-align: center;
+    font-weight: lighter;
+    width: 100px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: #ad1111;
+    color: white;
+    border: none;
+    font-size: 20px;
+}
+
+button.delete_button:hover {
+  background-color: #8f0000 ;
+  color: white;
+}
+
+ul{
+  list-style-type: none;
+    text-align: left;
+}
+
+
+div.genre_list{
+    /*border: 2px solid rgb(63, 52, 84);*/
+    /*border-radius: 10px;*/
+    width: 230px;
+    height: 230px;
+    margin: auto;
+    overflow-y: scroll;
+}
+
+p.genre_list{
+    font-weight: bolder;
+    font-size: 25px;
+}
+
+a.new_genre{
+    color: rgb(63, 52, 84)
+}
+
+button.form_button{
+    font-weight: lighter;
+    width: 230px;
+    height: 50px;
+    border-radius: 4px;
+    background-color: rgb(63, 52, 84);
+    border: none;
+    color: rgb(232, 228, 240);
+    font-size: 20px;
+}
+
+button.form_button:hover {
+  background-color: #6a627a ;
+  color: white;
+}
+
+a.form_button{
+    padding: 0 14px 0 14px;
+    text-decoration: none;
+    font-weight: lighter;
+    /*width: 230px;*/
+    /*height: 50px;*/
+    border-radius: 4px;
+    background-color: rgb(63, 52, 84);
+    border: none;
+    color: rgb(232, 228, 240);
+    font-size: 20px;
+}
+
+a.form_button:hover{
+    background-color: #6a627a ;
+    color: white;
+}
+
+.center{
+    margin: auto;
+    text-align: center;
+}
+
+
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: rgb(232, 228, 240);
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #e4e1e8;
+  color: black;
+}
+
+.flash{
+    font-size: 25px;
+    text-align: center;
+    color: rgb(207, 0, 65);
+}
+
+div.post{
+    text-align: center;
+    border: 3px solid rgb(63, 52, 84);
+    border-radius: 10px;
+    width: 20%;
+    margin: auto;
+}
+

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Discover{% endblock %}
+{% block content %}
+<div class="center">
+    <h1 class="center">Discover</h1>
+    <form action="" method="post" name="discover" class="center">
+        <div class="genre_list_ds">
+            <div>
+              <div>
+                {{ form.genre(required=False, class='form',
+                                 placeholder='Genre') }}
+              </div>
+
+            </div>
+        </div>
+
+        {% for error in form.genre.errors %}
+            <p>
+                {{ "please select a genre" }}
+            </p>
+        {% endfor %}
+        <button class="form_button">
+          Discover
+        </button>
+    </form>
+</div>
+
+{% endblock %}
