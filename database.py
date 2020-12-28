@@ -4,7 +4,7 @@ import post
 
 
 class Database:
-    def __init__(self, host="localhost", user="root", passwd="281898.Ts", db="mydatabase"):
+    def __init__(self, host="eu-cdbr-west-03.cleardb.net", user="ba69cbb075d348", passwd="a9d11340", db="heroku_84eece35657a414"):
         self.host = host
         self.user = user
         self.passwd = passwd
