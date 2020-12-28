@@ -3,6 +3,7 @@
 {% block content %}
 <div class="center" style="width: 55%">
     <h1 class="center">Your feed</h1>
+            {% if posts is not none %}
             {% for i in range(((posts | length) / 3) | int) %}
                 <div class="entrance" style="float: left; width: 25%; margin-left: 5%">
                     <a class="post" href="{{url_for("post_page", post_id=posts[3 * i].post_id)}}">
@@ -174,6 +175,7 @@
                 </form>
 
             {% endfor %}
+            {% endif %}
                 {% if (posts | length) % 3 != 0 %}
                     <div class="entrance" style="float: left; width: 25%; margin-left: 5%">
                     <a class="post" href="{{url_for("post_page", post_id=posts[-1].post_id)}}">

@@ -18,6 +18,7 @@ def feed_page():
     embedded_links = []
     is_spotifys = []
     is_likeds = []
+
     for post_ in posts:
         embedded_links.append(post_.song.embedded_link)
         is_spotifys.append("spotify" in post_.song.link)

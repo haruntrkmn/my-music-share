@@ -15,8 +15,11 @@ class Database:
             cursor = connection.cursor()
             cursor.execute("""SHOW COLUMNS FROM genre_scores""")
             genres_ = []
+
             for c in cursor:
                 genres_.append(c[0])
+
+            print(genres_)
 
             genres_ = genres_[1:]
             if len(genres_) > 0:
