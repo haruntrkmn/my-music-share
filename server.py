@@ -39,9 +39,8 @@ def load_user(user_id):
 #     app.config["db"] = db
 #
 #     return app
-
+app = Flask(__name__)
 if __name__ == "__main__":
-    app = Flask(__name__)
     app.config.from_object("settings")
     app.add_url_rule("/", view_func=views.feed_page, methods=["GET", "POST"])
     app.add_url_rule(
