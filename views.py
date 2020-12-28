@@ -79,11 +79,15 @@ def create_account_page():
         password = form.data["password"].strip()
         hashed = hasher.hash(password)
         today = date.today()
-        new_user = u.create_user(username, hashed, today.strftime("%d %m %y"))
-        if new_user:
-            login_user(new_user)
-            next_page = request.args.get("next", url_for("feed_page"))
-            return redirect(next_page)
+        forbidden = [';', '.', ',', ':', '_', '@', '#', '*', '=', '"']
+        if contains(username, forbidden):
+            flash("please remove non-letters from your name")
+        else:
+            new_user = u.create_user(username, hashed, today.strftime("%d %m %y"))
+            if new_user:
+                login_user(new_user)
+                next_page = request.args.get("next", url_for("feed_page"))
+                return redirect(next_page)
     return render_template("create_account.html", form=form)
 
 
@@ -183,18 +187,19 @@ def create_post_page():
         song_name = form.data["song_name"].lower().strip()
         link = form.data["link"].strip()
         genre = form.data["genre"].strip()
+        artist = form.data["artist"].lower().strip()
         if form.data["new_genre"]:
             genre = form.data["new_genre"].strip()
             if is_number(genre):
                 flash("Please specify a non-number genre")
             else:
                 genre = genre.lower()
-        forbidden = [';', '.', ',', ':', '_', '@', '#', '*']
+        forbidden = [';', ',', ':', '_', '@', '#', '*', '=', '"']
         if not is_number(genre):
-            if contains(genre, forbidden):
-                flash("please remove non-letters from your genre")
+            if contains(genre, forbidden) or contains(song_name, forbidden) or contains(artist, forbidden):
+                flash("please remove non-letters from your inputs")
             else:
-                artist = form.data["artist"].lower().strip()
+
                 today = date.today()
                 new_post = post.create_post(user_id, song_name, link, genre, artist, today.strftime("%d/%m/%y"))
                 if new_post is not None:

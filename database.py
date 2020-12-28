@@ -19,7 +19,6 @@ class Database:
             for c in cursor:
                 genres_.append(c[0])
 
-            print(genres_)
 
             genres_ = genres_[1:]
             if len(genres_) > 0:
@@ -225,6 +224,8 @@ class Database:
         with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
             try:
                 cursor = connection.cursor()
+                statement = """DELETE FROM feed WHERE post_id = %s"""  # deleting post from feed
+                cursor.execute(statement, (post_id,))
                 statement = """DELETE FROM comments WHERE post_id = %s;"""  # deleting comments of post
                 cursor.execute(statement, (post_id,))
                 statement = """DELETE FROM likes WHERE post_id = %s;"""  # deleting likes of post
@@ -460,7 +461,6 @@ class Database:
                     songs.genre = %s); """
                     cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
                     fetch = cursor.fetchall()
-                    print("fetch:", fetch)
                     priorities = {}
                     for f in fetch:
                         key = str(f[0]) + "," + str(f[1])
@@ -472,7 +472,6 @@ class Database:
                         priorities[key] = priority
 
                     for p in priorities.keys():
-                        print(p, "->", priorities[p])
                         post_id = int(p.split(',')[0])
                         user_id = int(p.split(',')[1])
                         priority_ = priorities[p]
