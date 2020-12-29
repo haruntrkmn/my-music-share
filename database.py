@@ -448,84 +448,84 @@ class Database:
     def update_and_get_feed(self, user):  # user object
         with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
             connection.set_client_encoding('UTF8')
-            try:
-                user_id = user.user_id
-                cursor = connection.cursor()
-                users_genres = user.get_fav_genres()
-                if 0 not in users_genres[1]:
-                    # step 1
-                    users_genres = users_genres[0]
-                    genre_1 = users_genres[0]
-                    genre_2 = users_genres[1]
-                    genre_3 = users_genres[2]
-                    statement = """INSERT INTO feed (SELECT post_id, %s, 0, False FROM posts INNER JOIN songs ON 
-                                    posts.song_id=songs.song_id AND (songs.genre=%s OR songs.genre=%s OR songs.genre=%s))
-                                    ON CONFLICT DO NOTHING;
-                                    """
-                    cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
-                    connection.commit()
+            #try:
+            user_id = user.user_id
+            cursor = connection.cursor()
+            users_genres = user.get_fav_genres()
+            if 0 not in users_genres[1]:
+                # step 1
+                users_genres = users_genres[0]
+                genre_1 = users_genres[0]
+                genre_2 = users_genres[1]
+                genre_3 = users_genres[2]
+                statement = """INSERT INTO feed (SELECT post_id, %s, 0, False FROM posts INNER JOIN songs ON 
+                                posts.song_id=songs.song_id AND (songs.genre=%s OR songs.genre=%s OR songs.genre=%s))
+                                ON CONFLICT DO NOTHING;
+                                """
+                cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
+                connection.commit()
 
-                    # step 2
-                    statement = """CREATE TEMPORARY TABLE to_be_deleted(
-                                                        post_id_ INT,
-                                                        user_id_ INT
-                                                    );"""
-                    cursor.execute(statement)
+                # step 2
+                statement = """CREATE TEMPORARY TABLE to_be_deleted(
+                                                    post_id_ INT,
+                                                    user_id_ INT
+                                                );"""
+                cursor.execute(statement)
 
-                    statement = """ INSERT INTO to_be_deleted SELECT feed.post_id, feed.user_id FROM feed INNER JOIN posts ON
-                                                feed.post_id = posts.post_id INNER JOIN songs on posts.song_id = songs.song_id WHERE
-                                                (posts.user_id = %s AND songs.genre != %s AND songs.genre != %s AND
-                                                songs.genre != %s); DELETE FROM feed WHERE (post_id, user_id) IN
-                                                (SELECT post_id_, user_id_ FROM to_be_deleted);"""
-                    cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
+                statement = """ INSERT INTO to_be_deleted SELECT feed.post_id, feed.user_id FROM feed INNER JOIN posts ON
+                                            feed.post_id = posts.post_id INNER JOIN songs on posts.song_id = songs.song_id WHERE
+                                            (posts.user_id = %s AND songs.genre != %s AND songs.genre != %s AND
+                                            songs.genre != %s); DELETE FROM feed WHERE (post_id, user_id) IN
+                                            (SELECT post_id_, user_id_ FROM to_be_deleted);"""
+                cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
 
-                    statement = """DROP TABLE to_be_deleted;"""
-                    cursor.execute(statement)
-                    connection.commit()
+                statement = """DROP TABLE to_be_deleted;"""
+                cursor.execute(statement)
+                connection.commit()
 
-                    # step 3
+                # step 3
 
-                    statement = """ SELECT feed.post_id, feed.user_id, songs.genre FROM feed INNER JOIN posts ON feed.post_id = posts.post_id INNER JOIN songs 
-                    ON posts.song_id = songs.song_id INNER JOIN users ON users.user_id = feed.user_id 
-                    INNER JOIN genre_scores ON genre_scores.genre_score_id = users.genre_score_id WHERE feed.user_id = %s AND (songs.genre = %s OR songs.genre = %s OR
-                    songs.genre = %s); """
-                    cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
-                    fetch = cursor.fetchall()
-                    priorities = {}
-                    for f in fetch:
-                        key = str(f[0]) + "," + str(f[1])
-                        genre = f[2]
-                        fav_3_genres = user.get_fav_genres()
-                        genre_score = fav_3_genres[1][fav_3_genres[0].index(genre)]
-                        likes = len(self.get_likers_of_post(f[0]))
-                        priority = 0.7 * genre_score + 0.3 * likes
-                        priorities[key] = priority
-
-                    for p in priorities.keys():
-                        post_id = int(p.split(',')[0])
-                        user_id = int(p.split(',')[1])
-                        priority_ = priorities[p]
-
-                        statement = """ UPDATE feed SET priority=%s WHERE (post_id, user_id) = (%s, %s); """
-                        cursor.execute(statement, (priority_, post_id, user_id))
-                        connection.commit()
-
-
-                else:  # id user does not have 3 top genres (may have 2 or 1, but it is not important), just copy all posts in feed
-                    statement = """INSERT INTO feed (SELECT post_id, user_id, 0, False FROM posts INNER JOIN songs ON 
-                                    posts.song_id=songs.song_id) ON CONFLICT DO NOTHING; """
-                    cursor.execute(statement)
-
-
-                posts = []
-                statement = """SELECT posts.* FROM feed INNER JOIN posts ON feed.post_id = posts.post_id WHERE feed.user_id = %s ORDER BY feed.priority DESC;"""
-                cursor.execute(statement, (user_id, ))
+                statement = """ SELECT feed.post_id, feed.user_id, songs.genre FROM feed INNER JOIN posts ON feed.post_id = posts.post_id INNER JOIN songs 
+                ON posts.song_id = songs.song_id INNER JOIN users ON users.user_id = feed.user_id 
+                INNER JOIN genre_scores ON genre_scores.genre_score_id = users.genre_score_id WHERE feed.user_id = %s AND (songs.genre = %s OR songs.genre = %s OR
+                songs.genre = %s); """
+                cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
                 fetch = cursor.fetchall()
+                priorities = {}
                 for f in fetch:
-                    posts.append(post.get_post(f[0]))
-                cursor.close()
-                return posts
+                    key = str(f[0]) + "," + str(f[1])
+                    genre = f[2]
+                    fav_3_genres = user.get_fav_genres()
+                    genre_score = fav_3_genres[1][fav_3_genres[0].index(genre)]
+                    likes = len(self.get_likers_of_post(f[0]))
+                    priority = 0.7 * genre_score + 0.3 * likes
+                    priorities[key] = priority
 
-            except:
-                print("error on updating feed!!")
-                return None
+                for p in priorities.keys():
+                    post_id = int(p.split(',')[0])
+                    user_id = int(p.split(',')[1])
+                    priority_ = priorities[p]
+
+                    statement = """ UPDATE feed SET priority=%s WHERE (post_id, user_id) = (%s, %s); """
+                    cursor.execute(statement, (priority_, post_id, user_id))
+                    connection.commit()
+
+
+            else:  # id user does not have 3 top genres (may have 2 or 1, but it is not important), just copy all posts in feed
+                statement = """INSERT INTO feed (SELECT post_id, user_id, 0, False FROM posts INNER JOIN songs ON 
+                                posts.song_id=songs.song_id) ON CONFLICT DO NOTHING; """
+                cursor.execute(statement)
+
+
+            posts = []
+            statement = """SELECT posts.* FROM feed INNER JOIN posts ON feed.post_id = posts.post_id WHERE feed.user_id = %s ORDER BY feed.priority DESC;"""
+            cursor.execute(statement, (user_id, ))
+            fetch = cursor.fetchall()
+            for f in fetch:
+                posts.append(post.get_post(f[0]))
+            cursor.close()
+            return posts
+
+            # except:
+            #     print("error on updating feed!!")
+            #     return None
