@@ -1,23 +1,32 @@
-import MySQLdb as dbapi2
+#import MySQLdb as dbapi2
+import psycopg2 as dbapi2
 from flask import flash
 import post
 
 
 class Database:
-    def __init__(self, host="eu-cdbr-west-03.cleardb.net", user="ba69cbb075d348", passwd="a9d11340", db="heroku_84eece35657a414"):
+    #def __init__(self, host="localhost", user="root", passwd="281898.Ts", db="mydatabase"):
+    def __init__(self, host="localhost", user="postgres", password="28101998.ts", database="mydatabase_postgres"):
         self.host = host
         self.user = user
-        self.passwd = passwd
-        self.db = db
+        self.password = password
+        self.database = database
 
     def get_genres(self):
-        with dbapi2.connect(host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
             cursor = connection.cursor()
-            cursor.execute("""SHOW COLUMNS FROM genre_scores""")
+            statement = """SELECT 
+               column_name
+            FROM 
+               information_schema.columns
+            WHERE 
+               table_name = 'genre_scores';"""
+            #cursor.execute("""SHOW COLUMNS FROM genre_scores""")
+            cursor.execute(statement)
             genres_ = []
-
-            for c in cursor:
-                genres_.append(c[0])
+            fetch = cursor.fetchall()
+            for f in fetch:
+                genres_.append(f[0])
 
 
             genres_ = genres_[1:]
@@ -40,7 +49,8 @@ class Database:
 
     def create_user(self, username, password, join_date):
         # password will be passed as hashed to this function
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             genres, zeros = self.get_genres()
 
@@ -73,7 +83,7 @@ class Database:
         return True
 
     def get_user(self, username):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
             cursor = connection.cursor()
             statement = """SELECT user_id, password_ FROM users WHERE username = %s"""
             cursor.execute(statement, (username,))
@@ -89,7 +99,8 @@ class Database:
             return user_id, password
 
     def get_username_from_user_id(self, user_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """SELECT username FROM users WHERE user_id = %s"""
             cursor.execute(statement, (user_id,))
@@ -101,7 +112,8 @@ class Database:
             return user_name
 
     def get_join_date(self, username):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """SELECT join_date FROM users WHERE username = %s"""
             cursor.execute(statement, (username,))
@@ -115,7 +127,8 @@ class Database:
             return join_date
 
     def get_genre_scores(self, username):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """  SELECT * FROM genre_scores WHERE genre_score_id = 
                             (SELECT genre_score_id FROM users where username = %s);"""
@@ -130,7 +143,8 @@ class Database:
             return genre_scores
 
     def create_song(self, link, genre, song_name, artist):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             try:
                 if len(artist) > 0:
@@ -160,7 +174,8 @@ class Database:
             return new_song
 
     def create_post(self, post_date, song_id, user_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             try:
                 statement = """INSERT INTO posts(post_date, song_id, user_id) VALUES (%s, %s, %s)"""
@@ -186,7 +201,8 @@ class Database:
             return new_post
 
     def get_song(self, song_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """SELECT * FROM songs WHERE song_id = %s;"""
             cursor.execute(statement, (song_id,))
@@ -196,7 +212,8 @@ class Database:
         return _song
 
     def get_post(self, post_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """SELECT * FROM posts WHERE post_id = %s;"""
             cursor.execute(statement, (post_id,))
@@ -210,7 +227,8 @@ class Database:
 
     def get_posts_of_user(self, user_id):
         posts = []
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             cursor = connection.cursor()
             statement = """SELECT * FROM posts WHERE user_id = %s;"""
             cursor.execute(statement, (user_id,))
@@ -221,31 +239,33 @@ class Database:
         return posts
 
     def delete_post(self, post_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
-            try:
-                cursor = connection.cursor()
-                statement = """DELETE FROM feed WHERE post_id = %s"""  # deleting post from feed
-                cursor.execute(statement, (post_id,))
-                statement = """DELETE FROM comments WHERE post_id = %s;"""  # deleting comments of post
-                cursor.execute(statement, (post_id,))
-                statement = """DELETE FROM likes WHERE post_id = %s;"""  # deleting likes of post
-                cursor.execute(statement, (post_id,))
-                statement = """SELECT song_id FROM posts WHERE post_id = %s;"""  # getting song id of post
-                cursor.execute(statement, (post_id,))
-                song_id = cursor.fetchone()[0]
-                statement = """DELETE FROM posts WHERE post_id = %s;"""    # deleting post
-                cursor.execute(statement, (post_id,))
-                statement = """DELETE FROM songs WHERE song_id = %s;"""  # deleting song
-                cursor.execute(statement, (song_id,))
-                connection.commit()
-                cursor.close()
-            except:
-                connection.rollback()
-                return False
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
+            #try:
+            cursor = connection.cursor()
+            statement = """DELETE FROM feed WHERE post_id = %s"""  # deleting comments of post
+            cursor.execute(statement, (post_id,))
+            statement = """DELETE FROM comments WHERE post_id = %s;"""  # deleting comments of post
+            cursor.execute(statement, (post_id,))
+            statement = """DELETE FROM likes WHERE post_id = %s;"""  # deleting likes of post
+            cursor.execute(statement, (post_id,))
+            statement = """SELECT song_id FROM posts WHERE post_id = %s;"""  # getting song id of post
+            cursor.execute(statement, (post_id,))
+            song_id = cursor.fetchone()[0]
+            statement = """DELETE FROM posts WHERE post_id = %s;"""    # deleting post
+            cursor.execute(statement, (post_id,))
+            statement = """DELETE FROM songs WHERE song_id = %s;"""  # deleting song
+            cursor.execute(statement, (song_id,))
+            connection.commit()
+            cursor.close()
+            # except:
+            #     connection.rollback()
+            #     return False
         return True
 
     def update_genre_scores(self, increase, user_id, genre):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 if increase:
@@ -277,7 +297,8 @@ class Database:
         return True
 
     def add_new_genre(self, genre):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = "ALTER TABLE genre_scores ADD " + str(genre) + " INT DEFAULT 0"
@@ -292,7 +313,8 @@ class Database:
 
     def get_posts_of_a_genre(self, genre):
         posts = []
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = """SELECT * FROM posts WHERE song_id in (SELECT song_id FROM songs WHERE genre=%s);"""
@@ -308,7 +330,8 @@ class Database:
         return posts
 
     def add_like(self, user_id, post_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = """INSERT INTO likes(user_id, post_id) values(%s, %s);"""
@@ -325,10 +348,11 @@ class Database:
         return True
 
     def remove_like(self, user_id, post_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
-                statement = """DELETE FROM likes WHERE user_id=%s && post_id=%s;"""
+                statement = """DELETE FROM likes WHERE user_id=%s AND post_id=%s;"""
                 cursor.execute(statement, (user_id, post_id))
                 connection.commit()
                 cursor.close()
@@ -342,10 +366,11 @@ class Database:
         return True
 
     def is_post_liked_by(self, post_id, user_id):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
-                statement = """SELECT COUNT(*) FROM likes WHERE user_id=%s && post_id=%s;"""
+                statement = """SELECT COUNT(*) FROM likes WHERE user_id=%s AND post_id=%s;"""
                 cursor.execute(statement, (user_id, post_id))
                 fetch = cursor.fetchone()
                 count = fetch[0]
@@ -357,7 +382,8 @@ class Database:
         return count
 
     def add_comment(self, user_id, post_id, comment):
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = """INSERT INTO comments(comment_text, user_id, post_id) values(%s, %s, %s);"""
@@ -376,7 +402,8 @@ class Database:
 
     def get_likers_of_post(self, post_id):
         likers = []
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = """SELECT user_id FROM likes WHERE post_id = %s;"""
@@ -396,7 +423,8 @@ class Database:
 
     def get_comments_of_post(self, post_id):
         comments = []
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 cursor = connection.cursor()
                 statement = """SELECT comment_text, user_id FROM comments WHERE post_id = %s;"""
@@ -417,7 +445,8 @@ class Database:
 
     # updates feed, and returns posts list
     def update_and_get_feed(self, user):  # user object
-        with dbapi2.connect(charset='utf8', host=self.host, user=self.user, passwd=self.passwd, db=self.db) as connection:
+        with dbapi2.connect(host=self.host, user=self.user, password=self.password, database=self.database) as connection:
+            connection.set_client_encoding('UTF8')
             try:
                 user_id = user.user_id
                 cursor = connection.cursor()
@@ -428,9 +457,9 @@ class Database:
                     genre_1 = users_genres[0]
                     genre_2 = users_genres[1]
                     genre_3 = users_genres[2]
-                    statement = """INSERT INTO feed (SELECT post_id, %s, 0, 0 FROM posts INNER JOIN songs ON 
+                    statement = """INSERT INTO feed (SELECT post_id, %s, 0, False FROM posts INNER JOIN songs ON 
                                     posts.song_id=songs.song_id AND (songs.genre=%s OR songs.genre=%s OR songs.genre=%s))
-                                    ON DUPLICATE KEY UPDATE feed.post_id=feed.post_id;
+                                    ON CONFLICT DO NOTHING;
                                     """
                     cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
                     connection.commit()
@@ -482,8 +511,8 @@ class Database:
 
 
                 else:  # id user does not have 3 top genres (may have 2 or 1, but it is not important), just copy all posts in feed
-                    statement = """INSERT INTO feed (SELECT post_id, user_id, 0, 0 FROM posts INNER JOIN songs ON 
-                                    posts.song_id=songs.song_id) ON DUPLICATE KEY UPDATE feed.post_id=feed.post_id; """
+                    statement = """INSERT INTO feed (SELECT post_id, user_id, 0, False FROM posts INNER JOIN songs ON 
+                                    posts.song_id=songs.song_id) ON CONFLICT DO NOTHING; """
                     cursor.execute(statement)
 
 
