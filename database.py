@@ -452,6 +452,7 @@ class Database:
             user_id = user.user_id
             cursor = connection.cursor()
             users_genres = user.get_fav_genres()
+            print("USER GENRES:", users_genres)
             if 0 not in users_genres[1]:
                 # step 1
                 users_genres = users_genres[0]
