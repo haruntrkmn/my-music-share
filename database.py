@@ -459,10 +459,10 @@ class Database:
                     genre_2 = users_genres[1]
                     genre_3 = users_genres[2]
                     statement = """INSERT INTO feed (SELECT post_id, %s, 0, False FROM posts INNER JOIN songs ON 
-                                    posts.song_id=songs.song_id AND (songs.genre=%s OR songs.genre=%s OR songs.genre=%s))
+                                    posts.song_id=songs.song_id AND (songs.genre=%s OR songs.genre=%s OR songs.genre=%s) where posts.user_id != %s)
                                     ON CONFLICT DO NOTHING;
                                     """
-                    cursor.execute(statement, (user_id, genre_1, genre_2, genre_3))
+                    cursor.execute(statement, (user_id, genre_1, genre_2, genre_3, user_id))
                     connection.commit()
 
                     # step 2
