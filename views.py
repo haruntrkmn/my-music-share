@@ -194,10 +194,13 @@ def create_post_page():
                 flash("Please specify a non-number genre")
             else:
                 genre = genre.lower()
-        forbidden = [';', ',', ':', '_', '@', '#', '*', '=', '"']
+        forbidden = [';', ',', ':', '_', '@', '#', '*', '=', '"', "&"]
+        forbidden_genre = [';', ',', ':', '_', '@', '#', '*', '=', '"', " ", "&"]
         if not is_number(genre):
-            if contains(genre, forbidden) or contains(song_name, forbidden) or contains(artist, forbidden):
-                flash("please remove non-letters from your inputs")
+            if contains(genre, forbidden_genre):
+                flash("please remove non-letters or spaces from your genre")
+            elif contains(song_name, forbidden) or contains(artist, forbidden):
+                flash("please remove non-letters from song name or artist")
             else:
 
                 today = date.today()
