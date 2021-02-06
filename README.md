@@ -1,1 +1,1 @@
-"# my-music-share" 
+"A social media platform to share music." 
