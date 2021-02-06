@@ -1,13 +1,11 @@
-#import MySQLdb as dbapi2
 import psycopg2 as dbapi2
 from flask import flash
 import post
 
 
 class Database:
-    #def __init__(self, host="localhost", user="root", passwd="281898.Ts", db="mydatabase"):
-    def __init__(self, host="ec2-54-228-250-82.eu-west-1.compute.amazonaws.com", user="urngwrddnltves",
-                 password="519ea0fa04c36f1d891447deb8a5da7f6a85e6a2a1fbb5b6c8b502a6a7cd1b21", database="da0fcaln1mev4g"):
+    def __init__(self, host="hostname", user="username",
+                 password="password", database="database"):
         self.host = host
         self.user = user
         self.password = password
